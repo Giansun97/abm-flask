@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalles del Cliente</title>
+    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">Detalles del Cliente</h1>
+
+        {% if cliente %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Información del Cliente</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Cuit:</strong> {{ cliente[0] }}</li>
+                    <li class="list-group-item"><strong>Nombre:</strong> {{ cliente[2] }}</li>
+                    <li class="list-group-item"><strong>Password:</strong> {{ cliente[1] }}</li>
+                    <li class="list-group-item"><strong>Liquidador:</strong>
+                        {% if cliente[3] %}
+                            {{ cliente[3] }}
+                        {% else %}
+                            No tiene asignado todavía
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">
+                        {% if cliente[4] == 1 %}
+                            <p><strong>Tiene Certificado MiPyme:</strong> Si</p>
+                            <p><strong>Vencimiento Certificado MiPyme:</strong> {{ cliente[5] }}</p>
+                        {% else %}
+                            <p><strong>Tiene Certificado MiPyme:</strong> No</p>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Agregar botón para editar datos -->
+        <form method="GET" action="{{ url_for('editar_cliente', cuit=cliente[0]) }}">
+            <a href="/" class="btn btn-primary mt-3">Volver a la lista de clientes</a>
+            <button type="submit" class="btn btn-success mt-3">Editar Datos</button>
+        </form>
+    </div>
+</body>
+</html>
+

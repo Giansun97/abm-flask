@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Datos del Cliente</title>
+</head>
+<body>
+    <h1>Editar Datos del Cliente</h1>
+
+    <form method="POST" action="{{ url_for('actualizar_cliente', cuit=cliente[0]) }}">
+        <label for="cuit">Cuit:</label>
+        <input type="text" id="cuit" name="cuit" value="{{ cliente[0] }}" readonly>
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" value="{{ cliente[2] }}" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" value="{{ cliente[1] }}" required>
+
+        <label for="liquidador">Liquidador:</label>
+        <input type="text" id="liquidador" name="liquidador" value="{{ cliente[3] }}">
+
+        <label for="tiene_certificado">Tiene Certificado MiPyme:</label>
+
+        <select id="tiene_certificado" name="tiene_certificado">
+            <option value="1">Si</option>
+            <option value="0">No</option>
+        </select>
+
+         <div id="fecha_certificado" style="display: none;">
+            <label for="vencimiento_certificado">Vencimiento Certificado MiPyme:</label>
+            <input type="date" id="vencimiento_certificado" name="vencimiento_certificado">
+        </div>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+    <script>
+        document.getElementById('tiene_certificado').addEventListener('change', function() {
+            var fechaCertificado = document.getElementById('fecha_certificado');
+            if (this.value === '1') {
+                fechaCertificado.style.display = 'block';
+            } else {
+                fechaCertificado.style.display = 'none';
+            }
+        });
+    </script>
+
+    <a href="/">Volver a la lista de clientes</a>
+</body>
+</html>
