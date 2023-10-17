@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Cliente</title>
+    <!-- Enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registrar_cliente">Registrar Cliente</a>
+                        </li>
+                        <!-- Agrega más enlaces aquí -->
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Contenido principal -->
+            <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container mt-4">
+                    <h1 class="mb-4">Registro de Clientes</h1>
+
+                    <!-- Formulario de registro -->
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="cuit">Cuit:</label>
+                            <input type="text" class="form-control" name="cuit" id="cuit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña:</label>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" name="nombre" id="nombre" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Cliente</button>
+                    </form>
+
+                    <!-- Mensaje de éxito -->
+                    {% if message %}
+                        <div class="alert alert-success mt-4">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                </div>
+            </main>
+        </div>
+    </div>
+    <!-- Enlace al archivo JavaScript de Bootstrap (si es necesario) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

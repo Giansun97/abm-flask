@@ -2,49 +2,113 @@
 <html>
 <head>
     <title>Editar Datos del Cliente</title>
+    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Editar Datos del Cliente</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Editar Datos del Cliente</h1>
 
-    <form method="POST" action="{{ url_for('actualizar_cliente', cuit=cliente[0]) }}">
-        <label for="cuit">Cuit:</label>
-        <input type="text" id="cuit" name="cuit" value="{{ cliente[0] }}" readonly>
+        <form method="POST" action="{{ url_for('actualizar_cliente', cuit=cliente[0]) }}">
+            <div class="form-group">
+                <label for="cuit">Cuit:</label>
+                <input type="text" id="cuit" name="cuit" value="{{ cliente[0] }}" class="form-control" readonly>
+            </div>
 
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" value="{{ cliente[2] }}" required>
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="{{ cliente[2] }}" class="form-control" required>
+            </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" value="{{ cliente[1] }}" required>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="{{ cliente[1] }}" class="form-control" required>
+            </div>
 
-        <label for="liquidador">Liquidador:</label>
-        <input type="text" id="liquidador" name="liquidador" value="{{ cliente[3] }}">
+            <div class="form-group">
+                <label for="liquidador">Liquidador:</label>
+                <input type="text" id="liquidador" name="liquidador" value="{{ cliente[3] }}" class="form-control">
+            </div>
 
-        <label for="tiene_certificado">Tiene Certificado MiPyme:</label>
+            <div class="form-group">
+                <label for="tiene_certificado">Tiene Certificado MiPyme:</label>
+                <select id="tiene_certificado" name="tiene_certificado" class="form-control">
+                    <option value="1">Si</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
 
-        <select id="tiene_certificado" name="tiene_certificado">
-            <option value="1">Si</option>
-            <option value="0">No</option>
-        </select>
+            <div id="fecha_certificado" style="display: none;" class="form-group">
+                <label for="vencimiento_certificado">Vencimiento Certificado MiPyme:</label>
+                <input type="date" id="vencimiento_certificado" name="vencimiento_certificado" class="form-control">
+            </div>
 
-         <div id="fecha_certificado" style="display: none;">
-            <label for="vencimiento_certificado">Vencimiento Certificado MiPyme:</label>
-            <input type="date" id="vencimiento_certificado" name="vencimiento_certificado">
-        </div>
+            <!-- Botón para agregar contribuyentes -->
+            <button type="button" class="btn btn-primary" id="agregar-contribuyente">Agregar Contribuyente</button>
 
-        <button type="submit">Guardar Cambios</button>
-    </form>
+            <!-- Contenedor para las filas de contribuyentes -->
+            <div id="contribuyentes-container"></div>
 
-    <script>
-        document.getElementById('tiene_certificado').addEventListener('change', function() {
-            var fechaCertificado = document.getElementById('fecha_certificado');
-            if (this.value === '1') {
-                fechaCertificado.style.display = 'block';
-            } else {
-                fechaCertificado.style.display = 'none';
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+
+        <script>
+            document.getElementById('tiene_certificado').addEventListener('change', function() {
+                var fechaCertificado = document.getElementById('fecha_certificado');
+                if (this.value === '1') {
+                    fechaCertificado.style.display = 'block';
+                } else {
+                    fechaCertificado.style.display = 'none';
+                }
+            });
+
+            // Contador para llevar el control de las filas de contribuyentes
+            let contribuyenteCounter = 0;
+
+            // Función para agregar una fila de contribuyente
+            function agregarFilaContribuyente() {
+                contribuyenteCounter++;
+
+                const contribuyenteRow = `
+                    <div class="row mt-3" id="contribuyente-row-${contribuyenteCounter}">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="contribuyente[]" placeholder="Contribuyente" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="periodo_desde[]" placeholder="Periodo Desde" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="periodo_hasta[]" placeholder="Periodo Hasta" required>
+                        </div>
+                        <div class="col-md-2 mt-2">
+                            <button type="button" class="btn btn-danger" onclick="eliminarFilaContribuyente(${contribuyenteCounter})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+
+                // Agrega la fila de contribuyente al contenedor
+                document.getElementById('contribuyentes-container').innerHTML += contribuyenteRow;
             }
-        });
-    </script>
 
-    <a href="/">Volver a la lista de clientes</a>
+            // Función para eliminar una fila de contribuyente
+            function eliminarFilaContribuyente(counter) {
+                // Elimina la fila de contribuyente del contenedor
+                const rowToRemove = document.getElementById(`contribuyente-row-${counter}`);
+                if (rowToRemove) {
+                    rowToRemove.remove();
+                }
+            }
+
+            // Agrega un evento de clic al botón para agregar contribuyentes
+            document.getElementById('agregar-contribuyente').addEventListener('click', agregarFilaContribuyente);
+
+        </script>
+
+        <a href="/" class="mt-3 btn btn-secondary">Volver a la lista de clientes</a>
+    </div>
+
+    <!-- Agrega el enlace al archivo JavaScript de Bootstrap (si es necesario) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+

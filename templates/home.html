@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registro de Clientes</title>
-    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <title>Mini APP - WNS</title>
+    <!-- Enlace al archivo CSS de Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-4">
-        <h1 class="mb-4">Registro de Clientes</h1>
-        <form method="POST">
-            <div class="form-group">
-                <label for="cuit">Cuit:</label>
-                <input type="text" class="form-control" name="cuit" id="cuit" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" class="form-control" name="password" id="password" required>
-            </div>
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" class="form-control" name="nombre" id="nombre" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Agregar Cliente</button>
-        </form>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Barra lateral -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/registrar_cliente">Registrar Cliente</a>
+                        </li>
+                        <!-- Agrega más enlaces aquí -->
+                    </ul>
+                </div>
+            </nav>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                {% block content %}
 
-        {% if message %}
-            <p>{{ message }}</p>
-        {% endif %}
+                    <div class="alert alert-danger">
+                        <h4 class="mt-4">Alertas de Vencimiento MiPyme</h4>
+                        <ul>
+                            {% for cliente_con_alerta in clientes_con_alerta %}
+                            <li>
+                                Cuit: {{ cliente_con_alerta[0] }} |
+                                Nombre: {{ cliente_con_alerta[2] }} |
+                                Vencimiento MiPyme: {{ cliente_con_alerta[5] }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
 
-        <h2 class="mt-4">Clientes Registrados</h2>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Cuit</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Detalles</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cliente in clientes %}
-                    <tr>
-                        <td>{{ cliente[0] }}</td>
-                        <td>{{ cliente[2] }}</td>
-                        <td><a href="/cliente/{{ cliente[0] }}" class="btn btn-info">Ver Detalles</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    <h2 class="mt-4">Clientes Registrados</h2>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Cuit</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                                <tr>
+                                    <td>{{ cliente[0] }}</td>
+                                    <td>{{ cliente[2] }}</td>
+                                    <td><a href="/cliente/{{ cliente[0] }}" class="btn btn-info">Ver Detalles</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-        <a href="{{ url_for('exportar_excel') }}" class="btn btn-success">Exportar a Excel</a>
+                    <a href="{{ url_for('exportar_excel') }}" class="btn btn-success">Exportar a Excel</a>
+                {% endblock %}
+            </main>
+        </div>
     </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_file
 import sqlite3
 import pandas as pd
+import datetime
 
 
 def consultar_tabla_clientes():
@@ -15,7 +16,7 @@ def consultar_tabla_clientes():
     columnNames = [column[0] for column in cursor.description]
     for record in my_result:
         insertObject.append(dict(zip(columnNames, record)))
-        print(insertObject)
+        # print(insertObject)
 
     # Cerrar la conexión
     conn.close()
@@ -55,6 +56,7 @@ def obtener_todos_los_clientes():
 
     return clientes
 
+
 obtener_todos_los_clientes()
 
 
@@ -66,11 +68,42 @@ def actualizar_cliente(cuit, password, nombre):
     conn.close()
 
 
+def consultar_vencimientos_proximos_mipyme():
+    # Obtener la fecha actual
+    fecha_actual = datetime.date.today()
+
+    # Calcular la fecha de vencimiento del próximo mes
+    primer_dia_proximo_mes = fecha_actual.replace(day=1)
+    fecha_proximo_mes = primer_dia_proximo_mes + datetime.timedelta(days=32)
+
+    # Consultar la base de datos para obtener clientes con fecha de vencimiento en el próximo mes
+    conn = sqlite3.connect('test.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clientes WHERE vencimiento_certificado BETWEEN ? AND ?",
+                   (primer_dia_proximo_mes, fecha_proximo_mes))
+    clientes_con_alerta = cursor.fetchall()
+    print(clientes_con_alerta)
+    conn.close()
+
+    return clientes_con_alerta
+
+
 app = Flask(__name__)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    clientes = obtener_todos_los_clientes()
+
+    clientes_con_alerta = consultar_vencimientos_proximos_mipyme()
+
+    return render_template('home.html',
+                           clientes=clientes,
+                           clientes_con_alerta=clientes_con_alerta)
+
+
+@app.route('/registrar_cliente', methods=['GET', 'POST'])
+def registrar_cliente():
     message = None
 
     if request.method == 'POST':
@@ -79,11 +112,8 @@ def home():
         nombre = request.form['nombre']
         message = agregar_cliente(cuit, password, nombre)
 
-    clientes = obtener_todos_los_clientes()
-
-    return render_template('home.html',
-                           message=message,
-                           clientes=clientes)
+    return render_template('registrar_cliente.html',
+                           message=message)
 
 
 @app.route('/exportar_excel', methods=['GET'])
@@ -111,7 +141,8 @@ def ver_cliente(cuit):
         # Obtener el estado del certificado MiPyme desde el formulario
         tiene_certificado = request.form.get('tiene_certificado')
         # Actualizar el estado del certificado MiPyme en la base de datos
-        cursor.execute("UPDATE clientes SET tiene_certificado = ? WHERE cuit = ?", (tiene_certificado, cuit))
+        cursor.execute("UPDATE clientes SET tiene_certificado = ? WHERE cuit = ?",
+                       (tiene_certificado, cuit))
         conn.commit()
 
     # Obtener los detalles del cliente por su ID
@@ -163,7 +194,7 @@ def actualizar_cliente(cuit):
                            "vencimiento_certificado=? WHERE cuit=?",
                            (nuevo_nombre, nueva_password, liquidador,
                             tiene_certificado, vencimiento_certificado, cuit))
-            print(tiene_certificado, vencimiento_certificado)
+            # print(tiene_certificado, vencimiento_certificado)
             conn.commit()
             conn.close()
 

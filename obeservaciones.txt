@@ -1,0 +1,5 @@
+categoria:
+
+1. Mostrar a cuanto esta de pasarse de categoria el contribuyente.
+
+2. Mostrar a cuanto esta de la exlusion del monotributo el contribuyente.
